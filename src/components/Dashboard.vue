@@ -8,7 +8,6 @@
                     <ul>
                         <li>Your name: {{ userDetails.userName }}</li>
                         <li>Email: {{ userDetails.email }}</li>
-                        <li>Password: {{ userDetails.password }}</li>
                     </ul>
                 </div>
                 <div>
@@ -35,8 +34,11 @@ export default {
     },
     computed: {
         userDetails(){
-            return this.$store.getters['userDetails'];
+            return this.$store.getters['dashboardModule/userDetails'];
         },
+    },
+    created(){
+        this.$store.dispatch('dashboardModule/fetchUserData');
     },
 }
 </script>

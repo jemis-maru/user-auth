@@ -10,7 +10,7 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            redirect: '/register',
+            redirect: '/dashboard',
         },
         {
             path: '/register',
@@ -19,6 +19,9 @@ const router = createRouter({
         {
             path: '/login',
             component: Signin,
+            meta: {
+                requiredUnauth: true,
+            },
         },
         {
             path: '/dashboard',
@@ -37,6 +40,9 @@ const router = createRouter({
 router.beforeEach(function(to, _, next){
     if(to.meta.requiredAuth && !store.getters.isAuth){
         next('/login');
+    }
+    else if(to.meta.requiredUnauth && store.getters.isAuth){
+        next('/dashboard');
     }
     else{
         next();

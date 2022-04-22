@@ -1,7 +1,10 @@
 <template>
     <div>
-        <custom-dialog :show="!!isRegister" routePath="/login" btnName="Login" title="Register successfully" @close="closeDialog">
+        <custom-dialog :isErr="false" :show="!!isRegister" routePath="/login" btnName="Login" title="Register successfully" @close="closeDialog">
             <p>{{ isRegister }}</p>
+        </custom-dialog>
+        <custom-dialog :show="!!isError" :isErr="true" title="Error" @close="closeDialog">
+            <p>{{ isError }}</p>
         </custom-dialog>
         <container-card>
             <h2 class="textCenter">Register</h2>
@@ -53,28 +56,40 @@ export default {
             confirmPassword: '',
             anyError: false,
             isRegister: null,
+            isError: null,
         };
     },
     methods: {
-        submitForm(){
+        async submitForm(){
             this.anyError = false;
             if(!this.isUserNameValid || !this.isEmailValid || !this.isPasswordValid || !this.isBothPasswordMatch){
                 this.anyError = true;
                 return;
             }
-            this.$store.dispatch('register', {
-                userName: this.userName,
-                email: this.email,
-                password: this.password,
-            });
-            this.userName = '';
-            this.email = '';
-            this.password = '';
-            this.confirmPassword = '';
-            this.isRegister = 'Go to login';
+            try{
+                await this.$store.dispatch('register', {
+                    userName: this.userName,
+                    email: this.email,
+                    password: this.password,
+                });
+                this.userName = '';
+                this.email = '';
+                this.password = '';
+                this.confirmPassword = '';
+                this.isRegister = 'Go to login';
+            }
+            catch(err){
+                this.userName = '';
+                this.email = '';
+                this.password = '';
+                this.confirmPassword = '';
+                this.isError = err.message || 'Something went wrong!';
+                console.log(this.isError);
+            }
         },
         closeDialog(){
             this.isRegister = null;
+            this.isError = null;
         },
     },
     computed: {

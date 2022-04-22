@@ -1,12 +1,15 @@
 <template>
     <div>
-        <custom-dialog v-if="!loginFailed" :show="!!isLogin" routePath="/dashboard" btnName="Dashboard" title="Login successfully" @close="closeDialog">
+        <custom-dialog :isErr="false" :show="!!isLogin" routePath="/dashboard" btnName="Dashboard" title="Login successfully" @close="closeDialog">
             <p>{{ isLogin }}</p>
         </custom-dialog>
-        <custom-dialog v-else :show="!!isLogin" routePath="/login" btnName="Login" title="Login failed" @close="closeDialog">
+        <custom-dialog :show="!!isError" :isErr="true" title="Error" @close="closeDialog">
+            <p>{{ isError }}</p>
+        </custom-dialog>
+        <!-- <custom-dialog v-else :isErr="false" :show="!!isLogin" routePath="/login" btnName="Login" title="Login failed" @close="closeDialog">
             <p>Make sure you register.</p>
             <p>Try to login again!</p>
-        </custom-dialog>
+        </custom-dialog> -->
         <container-card>
             <h2 class="textCenter">Login</h2>
             <div>
@@ -45,25 +48,35 @@ export default {
             password: '',
             anyError: false,
             isLogin: null,
+            isError: null,
         };
     },
     methods: {
-        submitForm(){
+        async submitForm(){
             this.anyError = false;
             if(!this.isEmailValid || !this.isPasswordValid){
                 this.anyError = true;
                 return;
             }
-            this.$store.dispatch('login', {
-                email: this.email,
-                password: this.password,
-            });
-            this.email = '';
-            this.password = '';
-            this.isLogin = 'Go to Dashboard';
+            try{
+                await this.$store.dispatch('login', {
+                    email: this.email,
+                    password: this.password,
+                });
+                this.email = '';
+                this.password = '';
+                this.isLogin = 'Go to Dashboard';
+            }
+            catch(err){
+                this.email = '';
+                this.password = '';
+                this.isError = err.message || 'Something went wrong!';
+                console.log(this.isError);
+            }
         },
         closeDialog(){
             this.isLogin = null;
+            this.isError = null;
         },
     },
     computed: {

@@ -10,7 +10,10 @@
           <slot></slot>
         </section>
         <menu>
-          <custom-button @click="tryClose">
+          <custom-button v-if="isErr" @click="tryClose">
+            Close
+          </custom-button>
+          <custom-button v-else @click="tryClose">
             <router-link class="routeLinkClass" :to="routePath">{{ btnName }}</router-link>
           </custom-button>
         </menu>
@@ -37,10 +40,14 @@ export default {
     },
     btnName: {
       type: String,
-      required: true,
+      required: false,
     },
     routePath: {
       type: String,
+      required: false,
+    },
+    isErr: {
+      type: Boolean,
       required: true,
     },
   },
