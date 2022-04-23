@@ -1,11 +1,41 @@
 <template>
+  <custom-dialog :show="isSessionExpired" :isErr="true" title="Session Expired!" @close="closeDialog">
+      <p>Login again!</p>
+  </custom-dialog>
   <router-view></router-view>
 </template>
 
 <script>
+import CustomDialog from './components/ui/CustomDialog.vue';
 
 export default {
   name: 'App',
+  components: {
+    'custom-dialog': CustomDialog,
+  },
+  data(){
+    return{
+      isSessionExpired: false,
+    };
+  },
+  methods: {
+    closeDialog(){
+        this.isSessionExpired = false;
+    },
+  },
+  computed: {
+    didAutoLogout(){
+      return this.$store.getters.didAutoLogout;
+    },
+  },
+  watch: {
+    didAutoLogout(curVal, oldVal){
+      if(curVal && curVal != oldVal){
+        this.$router.replace('/login');
+        this.isSessionExpired = true;
+      }
+    },
+  },
   created(){
     this.$store.dispatch('autoLogin');
   },
