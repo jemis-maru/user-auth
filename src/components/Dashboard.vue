@@ -2,6 +2,9 @@
     <div>
         <container-card>
             <div>
+                <div class="logoutDiv">
+                    <custom-button @click="logout">Logout</custom-button>
+                </div>
                 <h2 class="textCenter">Welcome {{ userDetails.userName }}</h2>
                 <div>
                     <p>Your details:</p>
@@ -9,10 +12,6 @@
                         <li>Your name: {{ userDetails.userName }}</li>
                         <li>Email: {{ userDetails.email }}</li>
                     </ul>
-                </div>
-                <div>
-                    <p>Want to logout?</p>
-                    <custom-button @click="logout">Logout</custom-button>
                 </div>
             </div>
         </container-card>
@@ -42,3 +41,9 @@ export default {
     },
 }
 </script>
+
+<style scoped>
+.logoutDiv{
+    text-align: right;
+}
+</style>
